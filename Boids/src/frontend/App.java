@@ -16,7 +16,9 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -26,7 +28,8 @@ public class App extends Application {
 	
 	final private Duration DURATION = Duration.millis(33); //~60FPS
 	
-	private Pane centerPanel = new Pane();;
+	private Pane centerPanel = new Pane();
+	private HBox topPanel = new HBox();
 	private Timeline timeline = new Timeline();
 	private KeyFrame kf;
 	
@@ -38,7 +41,9 @@ public class App extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		BorderPane root = new BorderPane();
 		root.setCenter(centerPanel);
+		root.setTop(topPanel);
 		
+		setupTopPanel();
 		setupCenterPanel();
 		
 		kf = new KeyFrame(DURATION, new EventHandler<ActionEvent>() {
@@ -59,11 +64,15 @@ public class App extends Application {
 		timeline.getKeyFrames().add(kf);
 		timeline.play();
 		
-		Scene scene = new Scene(root, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
+		Scene scene = new Scene(root, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT  + Constants.TOP_PANEL_HEIGHT);
 		
 		primaryStage.setTitle("Boids Simulation");
 		primaryStage.setScene(scene);
 		primaryStage.show();
+	}
+	
+	private void setupTopPanel() {
+		
 	}
 	
 	private void setupCenterPanel() {

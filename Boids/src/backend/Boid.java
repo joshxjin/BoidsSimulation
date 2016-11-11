@@ -43,10 +43,10 @@ public class Boid {
 					dy += Constants.BOID_OBSTACLE_AVOID_SPEED;
 				}
 				
-				normaliseSpeed();
+				//normaliseSpeed();
 			}
 		}
-		
+		normaliseSpeed();
 		x += dx;
 		y += dy;
 	}
@@ -69,7 +69,7 @@ public class Boid {
 				dx = dx / (neighbourBoids.size() + 1);
 				dy = dy / (neighbourBoids.size() + 1);
 				
-				normaliseSpeed();
+				//normaliseSpeed();
 			}
 		} 
 	}
@@ -119,7 +119,7 @@ public class Boid {
 					dy += Constants.BOID_NEIGHBOUR_AVOID_SPEED;
 				}
 				
-				normaliseSpeed();
+				//normaliseSpeed();
 			}
 		}
 	}
