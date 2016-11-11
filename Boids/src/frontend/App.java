@@ -11,10 +11,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -25,7 +23,7 @@ import javafx.util.Duration;
 
 public class App extends Application {
 	
-	final private Duration DURATION = Duration.millis(33); //~30FPS
+	final private Duration DURATION = Duration.millis(33); //~60FPS
 	
 	private Pane centerPanel = new Pane();;
 	private Timeline timeline = new Timeline();
@@ -72,7 +70,6 @@ public class App extends Application {
 
 			@Override
 			public void handle(MouseEvent event) {
-
 				switch(event.getButton()) {
 				case PRIMARY:
 					Boid boid = new Boid(event.getX(), event.getY());
@@ -91,6 +88,19 @@ public class App extends Application {
 				}
 			}
 		});
+		
+		centerPanel.addEventFilter(MouseEvent.MOUSE_DRAGGED, new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				// TODO Auto-generated method stub
+				Boid boid = new Boid(event.getX(), event.getY());
+				MovingBoid movingBoid = new MovingBoid(centerPanel, boid.getX(), boid.getY());
+				
+				boidList.put(boid, movingBoid);
+			}
+		});
+		
 		centerPanel.minWidth(Constants.CANVAS_WIDTH);
 		centerPanel.minHeight(Constants.CANVAS_HEIGHT);
 		//setupBorderObstacles();

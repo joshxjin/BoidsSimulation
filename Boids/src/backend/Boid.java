@@ -13,49 +13,43 @@ public class Boid {
 		this.x = x;
 		this.y = y;
 		
-		dx = r.nextDouble() * 3;
-		dy = Math.sqrt(Math.pow(Constants.BOID_SPEED, 2) - Math.pow(dx, 2));
-		
-		switch(r.nextInt(2)) {
-		case 1:
-			dx = -dx;
-			break;
-		}
-		
-		switch(r.nextInt(2)) {
-		case 1:
-			dy = -dy;
-			break;
-		}
+		dx = randomNegative(r.nextDouble() * 3);
+		dy = randomNegative(Math.sqrt(Math.pow(Constants.BOID_SPEED, 2) - Math.pow(dx, 2)));
 		
 	}
 	
 	public void move(Set<Boid> boidList, ArrayList<Obstacle> obstacles) {
 		followNeighbour(boidList);
+		makePersonalSpace(boidList);
+		
+		randomMoveNoise();
+
 		wrapCanvas(Constants.WRAP_CANVAS);
 		
-		if (Constants.RANDOM_NOISE){
-			double noiseX = r.nextDouble() * 0.25;
-			double noiseY = r.nextDouble() * 0.25;
+		for (Obstacle obstacle: obstacles) {
+			double distX = x - obstacle.getX();
+			double distY = y - obstacle.getY();
 			
-			switch(r.nextInt(2)) {
-			case 1:
-				noiseX = -noiseX;
-				break;
+			if (Math.hypot(distX, distY) <= Constants.AVOID_DISTANCE) {
+				if (Math.abs(distX) < Math.abs(distY)) {
+					dx = -dx;
+				} else if (Math.abs(distY) < Math.abs(distX)) {
+					dy = -dy;
+				} else {
+					/*
+					switch(r.nextInt(2)) {
+					case 1:
+						dy = dy * 1.5;
+						dx = -dx / 1.5;
+						break;
+					default:
+						dy = dy / 1.5;
+						dx = -dx * 1.5;
+						break;
+					}
+					*/
+				}
 			}
-			
-			switch(r.nextInt(2)) {
-			case 1:
-				noiseY = -noiseY;
-				break;
-			}
-			
-			dx += noiseX;
-			dy += noiseY;
-			
-			double speed = Math.hypot(dx, dy);
-			dx = dx * Constants.BOID_SPEED / speed;
-			dy = dy * Constants.BOID_SPEED / speed;
 		}
 		
 		x += dx;
@@ -84,13 +78,63 @@ public class Boid {
 				dx = dx * Constants.BOID_SPEED / speed;
 				dy = dy * Constants.BOID_SPEED / speed;
 			}
-			
-			
-			/*
-			 * get average direction
-			 * move towards average direction
-			 */
 		} 
+	}
+	
+	private void makePersonalSpace(Set<Boid> boidList) {
+		
+		if (Constants.PERSONAL_SPACE) {
+			ArrayList<Boid> neighbourBoids = new ArrayList<Boid>();
+			for (Boid boid: boidList) {
+				double dist = Math.hypot(x - boid.getX(), y - boid.getY());
+				if (boid != this && dist < Constants.AVOID_DISTANCE) {
+					neighbourBoids.add(boid);
+				}
+			}
+			
+			if (!neighbourBoids.isEmpty()) {
+				Boid closestBoid = neighbourBoids.get(0);
+				double distX = x - closestBoid.getX();
+				double distY = y - closestBoid.getY();
+				double dist = Math.hypot(distX, distY);
+				for (int i = 1; i < neighbourBoids.size(); i++) {
+					distX = x - neighbourBoids.get(i).getX();
+					distY = y - neighbourBoids.get(i).getY();
+					if (Math.hypot(distX, distY) < dist) {
+						dist = Math.hypot(distX, distY);
+						closestBoid = neighbourBoids.get(i);
+					}
+				}
+				distX = x - closestBoid.getX();
+				distY = y - closestBoid.getY();
+				
+				if (distX < 0) { //to the left of neighbour
+					dx -= 0.5;
+				} else {
+					dx += 0.5;
+				}
+					
+				if (distY < 0) { //on top of neighbour
+					dy -= 0.5;
+				} else {
+					dy += 0.5;
+				}
+			}
+		}
+	}
+	
+	private void randomMoveNoise() {
+		if (Constants.RANDOM_NOISE){
+			double noiseX = randomNegative(r.nextDouble() * 0.25);
+			double noiseY = randomNegative(r.nextDouble() * 0.25);
+			
+			dx += noiseX;
+			dy += noiseY;
+			
+			double speed = Math.hypot(dx, dy);
+			dx = dx * Constants.BOID_SPEED / speed;
+			dy = dy * Constants.BOID_SPEED / speed;
+		}
 	}
 	
 	private void wrapCanvas(Boolean wrap) {
@@ -107,6 +151,16 @@ public class Boid {
 				y = 0;
 			}
 		}
+	}
+	
+	private double randomNegative(double number) {
+		switch(r.nextInt(2)) {
+		case 1:
+			number = -number;
+			break;
+		}
+		
+		return number;
 	}
 
 	public double getX() {
