@@ -9,4 +9,4 @@ Click reset to restart the simulation.
 
 Click another of the other toggle buttons to add/remove border obstacles and boid behavior properties.
 
-![alt tag](https://github.com/joshxjin/BoidsSimulation/blob/master/UI.png)
+![alt tag](https://github.com/joshxjin/BoidsSimulation/blob/master/BoidGIF.gif)
