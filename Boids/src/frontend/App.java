@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -37,6 +38,8 @@ public class App extends Application {
 	private ArrayList<Obstacle> obstacleList = new ArrayList<Obstacle>();
 	private HashMap<Boid, MovingBoid> boidList = new HashMap<Boid, MovingBoid>();
 	
+	private Boolean vertBorderObstacle = false;
+	private Boolean horBorderObstacle = true;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -86,7 +89,37 @@ public class App extends Application {
 			}
 		});
 		
+		ToggleButton verticalBorderObstacleBtn = new ToggleButton();
+		verticalBorderObstacleBtn.setSelected(false);
+		verticalBorderObstacleBtn.setText("Vertical Border");
+		verticalBorderObstacleBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				if (vertBorderObstacle) 
+					vertBorderObstacle = false;
+				else
+					vertBorderObstacle = true;
+			}
+		});
+		
+		ToggleButton horizontalBorderObstaclesBtn = new ToggleButton();
+		horizontalBorderObstaclesBtn.setSelected(true);
+		horizontalBorderObstaclesBtn.setText("Horizontal Border");
+		horizontalBorderObstaclesBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				if (horBorderObstacle)
+					horBorderObstacle = false;
+				else
+					horBorderObstacle = true;
+			}
+		});
+		
 		topPanel.getChildren().add(resetBtn);
+		topPanel.getChildren().add(verticalBorderObstacleBtn);
+		topPanel.getChildren().add(horizontalBorderObstaclesBtn);
 	}
 	
 	private void setupCenterPanel() {
@@ -133,34 +166,44 @@ public class App extends Application {
 	}
 	
 	private void setupBorderObstacles() {
-		int numOfHorizontalObstacles = Constants.CANVAS_WIDTH / (Constants.OBSTACLE_SIZE * 2);
-		int numOfVerticalObstacles = Constants.CANVAS_HEIGHT / (Constants.OBSTACLE_SIZE * 2);
-		
-		for (int i = 0; i < numOfHorizontalObstacles; i++) { //top and bottom obstacles
-			double tempX = Constants.OBSTACLE_SIZE * (i + 1) + Constants.OBSTACLE_SIZE * i;
-			for (int j = 0; j <= Constants.CANVAS_HEIGHT; j += Constants.CANVAS_HEIGHT) {
-				double tempY = Math.abs(Constants.OBSTACLE_SIZE - j);
-				Obstacle obstacle = new Obstacle(tempX, tempY);
-				obstacleList.add(obstacle);
-				Circle circle = new Circle(tempX, tempY, Constants.OBSTACLE_SIZE);
-				circle.setFill(Color.BLACK);
-				centerPanel.getChildren().add(circle);
+		verticalBorderObstacles();
+		horizontalBorderObstacles();
+	}
+	
+	private void verticalBorderObstacles() {
+		if (vertBorderObstacle) {
+			int numOfVerticalObstacles = Constants.CANVAS_HEIGHT / (Constants.OBSTACLE_SIZE * 2);
+			for (int i = 1; i < numOfVerticalObstacles - 1; i++) {//left and right obstacles
+				double tempY = Constants.OBSTACLE_SIZE * (i + 1) + Constants.OBSTACLE_SIZE * i;
+				for (int j = 0; j <= Constants.CANVAS_WIDTH; j += Constants.CANVAS_WIDTH) {
+					double tempX = Math.abs(Constants.OBSTACLE_SIZE - j);
+					Obstacle obstacle = new Obstacle(tempX, tempY);
+					obstacleList.add(obstacle);
+					Circle circle = new Circle(tempX, tempY, Constants.OBSTACLE_SIZE);
+					circle.setFill(Color.BLACK);
+					centerPanel.getChildren().add(circle);
+				}
 			}
 		}
-		
-		/*
-		for (int i = 1; i < numOfVerticalObstacles - 1; i++) {//left and right obstacles
-			double tempY = Constants.OBSTACLE_SIZE * (i + 1) + Constants.OBSTACLE_SIZE * i;
-			for (int j = 0; j <= Constants.CANVAS_WIDTH; j += Constants.CANVAS_WIDTH) {
-				double tempX = Math.abs(Constants.OBSTACLE_SIZE - j);
-				Obstacle obstacle = new Obstacle(tempX, tempY);
-				obstacleList.add(obstacle);
-				Circle circle = new Circle(tempX, tempY, Constants.OBSTACLE_SIZE);
-				circle.setFill(Color.BLACK);
-				centerPanel.getChildren().add(circle);
+	}
+	
+	private void horizontalBorderObstacles() {
+		if (horBorderObstacle) {
+			int numOfHorizontalObstacles = Constants.CANVAS_WIDTH / (Constants.OBSTACLE_SIZE * 2);
+			
+			
+			for (int i = 0; i < numOfHorizontalObstacles; i++) { //top and bottom obstacles
+				double tempX = Constants.OBSTACLE_SIZE * (i + 1) + Constants.OBSTACLE_SIZE * i;
+				for (int j = 0; j <= Constants.CANVAS_HEIGHT; j += Constants.CANVAS_HEIGHT) {
+					double tempY = Math.abs(Constants.OBSTACLE_SIZE - j);
+					Obstacle obstacle = new Obstacle(tempX, tempY);
+					obstacleList.add(obstacle);
+					Circle circle = new Circle(tempX, tempY, Constants.OBSTACLE_SIZE);
+					circle.setFill(Color.BLACK);
+					centerPanel.getChildren().add(circle);
+				}
 			}
 		}
-		*/
 	}
 	
 	public static void main(String[] args) {
