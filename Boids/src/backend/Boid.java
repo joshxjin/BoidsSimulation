@@ -31,7 +31,7 @@ public class Boid {
 	}
 	
 	public void move(Set<Boid> boidList, ArrayList<Obstacle> obstacles) {
-		followNeighbour(true, boidList);
+		followNeighbour(Constants.BOIDS_FOLLOW, boidList);
 		wrapCanvas(Constants.WRAP_CANVAS);
 	}
 	
@@ -52,6 +52,10 @@ public class Boid {
 				}
 				dx = dx / (neighbourBoids.size() + 1);
 				dy = dy / (neighbourBoids.size() + 1);
+				
+				double speed = Math.hypot(dx, dy);
+				dx = dx * Constants.BOID_SPEED / speed;
+				dy = dy * Constants.BOID_SPEED / speed;
 				
 				follow = false;
 			}
