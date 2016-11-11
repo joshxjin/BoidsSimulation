@@ -35,8 +35,10 @@ public class App extends Application {
 	private Timeline timeline = new Timeline();
 	private KeyFrame kf;
 	
-	private ArrayList<Obstacle> obstacleList = new ArrayList<Obstacle>();
+	private HashMap<Obstacle, Circle> obstacleList = new HashMap<Obstacle, Circle>();
 	private HashMap<Boid, MovingBoid> boidList = new HashMap<Boid, MovingBoid>();
+	private ArrayList<Obstacle> vertBorderObstacleList = new ArrayList<Obstacle>();
+	private ArrayList<Obstacle> horBorderObstacleList = new ArrayList<Obstacle>();
 	
 	private Boolean vertBorderObstacle = false;
 	private Boolean horBorderObstacle = true;
@@ -59,7 +61,7 @@ public class App extends Application {
 					Boid boid = boids.getKey();
 					MovingBoid movingBoid = boids.getValue();
 					
-					boid.move(boidList.keySet(), obstacleList);
+					boid.move(boidList.keySet(), obstacleList.keySet());
 					movingBoid.move(centerPanel, boid.getX(), boid.getY());
 				}
 			}
@@ -100,6 +102,8 @@ public class App extends Application {
 					vertBorderObstacle = false;
 				else
 					vertBorderObstacle = true;
+				
+				verticalBorderObstacles();
 			}
 		});
 		
@@ -114,12 +118,60 @@ public class App extends Application {
 					horBorderObstacle = false;
 				else
 					horBorderObstacle = true;
+				
+				horizontalBorderObstacles();
 			}
 		});
 		
+		ToggleButton boidsFollowBtn = new ToggleButton();
+		boidsFollowBtn.setSelected(true);
+		boidsFollowBtn.setText("Boids Follow");
+		boidsFollowBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				if (Constants.BOIDS_FOLLOW)
+					Constants.BOIDS_FOLLOW = false;
+				else
+					Constants.BOIDS_FOLLOW = true;
+			}
+		});
+		
+		ToggleButton randomNoiseBtn = new ToggleButton();
+		randomNoiseBtn.setSelected(true);
+		randomNoiseBtn.setText("Movement Noise");
+		randomNoiseBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				if (Constants.RANDOM_NOISE)
+					Constants.RANDOM_NOISE = false;
+				else
+					Constants.RANDOM_NOISE = true;
+			}
+		});
+		
+		ToggleButton personalSpaceBtn = new ToggleButton();
+		personalSpaceBtn.setSelected(true);
+		personalSpaceBtn.setText("Personal Space");
+		personalSpaceBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				if (Constants.PERSONAL_SPACE)
+					Constants.PERSONAL_SPACE = false;
+				else
+					Constants.PERSONAL_SPACE = true;
+			}
+		});
+		
+		topPanel.setMinHeight(Constants.TOP_PANEL_HEIGHT);
 		topPanel.getChildren().add(resetBtn);
 		topPanel.getChildren().add(verticalBorderObstacleBtn);
 		topPanel.getChildren().add(horizontalBorderObstaclesBtn);
+		topPanel.getChildren().add(boidsFollowBtn);
+		topPanel.getChildren().add(randomNoiseBtn);
+		topPanel.getChildren().add(personalSpaceBtn);
 	}
 	
 	private void setupCenterPanel() {
@@ -136,11 +188,12 @@ public class App extends Application {
 					break;
 				case SECONDARY:
 					Obstacle obstacle = new Obstacle(event.getX(), event.getY());
-					obstacleList.add(obstacle);
 					
 					Circle circle = new Circle(obstacle.getX(), obstacle.getY(), Constants.OBSTACLE_SIZE);
 					circle.setFill(Color.BLACK);
 					centerPanel.getChildren().add(circle);
+					
+					obstacleList.put(obstacle, circle);
 					break;
 				}
 			}
@@ -173,17 +226,23 @@ public class App extends Application {
 	private void verticalBorderObstacles() {
 		if (vertBorderObstacle) {
 			int numOfVerticalObstacles = Constants.CANVAS_HEIGHT / (Constants.OBSTACLE_SIZE * 2);
-			for (int i = 1; i < numOfVerticalObstacles - 1; i++) {//left and right obstacles
+			for (int i = 0; i < numOfVerticalObstacles; i++) {//left and right obstacles
 				double tempY = Constants.OBSTACLE_SIZE * (i + 1) + Constants.OBSTACLE_SIZE * i;
 				for (int j = 0; j <= Constants.CANVAS_WIDTH; j += Constants.CANVAS_WIDTH) {
 					double tempX = Math.abs(Constants.OBSTACLE_SIZE - j);
 					Obstacle obstacle = new Obstacle(tempX, tempY);
-					obstacleList.add(obstacle);
 					Circle circle = new Circle(tempX, tempY, Constants.OBSTACLE_SIZE);
 					circle.setFill(Color.BLACK);
 					centerPanel.getChildren().add(circle);
+					obstacleList.put(obstacle, circle);
+					vertBorderObstacleList.add(obstacle);
 				}
 			}
+		} else if (!vertBorderObstacleList.isEmpty()) {
+			for (Obstacle borderObstacle: vertBorderObstacleList) {
+				centerPanel.getChildren().remove(obstacleList.remove(borderObstacle));
+			}
+			vertBorderObstacleList.clear();
 		}
 	}
 	
@@ -197,12 +256,18 @@ public class App extends Application {
 				for (int j = 0; j <= Constants.CANVAS_HEIGHT; j += Constants.CANVAS_HEIGHT) {
 					double tempY = Math.abs(Constants.OBSTACLE_SIZE - j);
 					Obstacle obstacle = new Obstacle(tempX, tempY);
-					obstacleList.add(obstacle);
 					Circle circle = new Circle(tempX, tempY, Constants.OBSTACLE_SIZE);
 					circle.setFill(Color.BLACK);
 					centerPanel.getChildren().add(circle);
+					obstacleList.put(obstacle, circle);
+					horBorderObstacleList.add(obstacle);
 				}
 			}
+		} else if (!horBorderObstacleList.isEmpty()) {
+			for (Obstacle borderObstacle: horBorderObstacleList) {
+				centerPanel.getChildren().remove(obstacleList.remove(borderObstacle));
+			}
+			horBorderObstacleList.clear();
 		}
 	}
 	

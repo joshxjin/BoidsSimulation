@@ -4,12 +4,12 @@ public class Constants {
 	
 	public final static int CANVAS_WIDTH = 1000;
 	public final static int CANVAS_HEIGHT = 600;
-	public final static int TOP_PANEL_HEIGHT = 50;
+	public final static int TOP_PANEL_HEIGHT = 30;
 	
 	public final static Boolean WRAP_CANVAS = true;
-	public final static Boolean BOIDS_FOLLOW = true;
-	public final static Boolean RANDOM_NOISE = true;
-	public final static Boolean PERSONAL_SPACE = true;
+	public static Boolean BOIDS_FOLLOW = true;
+	public static Boolean RANDOM_NOISE = true;
+	public static Boolean PERSONAL_SPACE = true;
 	
 	public final static double BOID_SPEED = 4;
 	public final static double BOID_OBSTACLE_AVOID_SPEED = 2.5;

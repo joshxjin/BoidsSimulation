@@ -18,7 +18,7 @@ public class Boid {
 		
 	}
 	
-	public void move(Set<Boid> boidList, ArrayList<Obstacle> obstacles) {
+	public void move(Set<Boid> boidList, Set<Obstacle> obstacles) {
 		followNeighbour(boidList);
 		makePersonalSpace(boidList);
 		
