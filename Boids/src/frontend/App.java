@@ -22,7 +22,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -30,7 +29,7 @@ import javafx.util.Duration;
 
 public class App extends Application {
 	
-	final private Duration DURATION = Duration.millis(33); //~60FPS
+	final private Duration DURATION = Duration.millis(33); //~30FPS
 	
 	private Pane centerPanel = new Pane();
 	private HBox topPanel = new HBox();
@@ -51,15 +50,14 @@ public class App extends Application {
 		root.setCenter(centerPanel);
 		root.setTop(topPanel);
 		
-		setupTopPanel();
-		setupCenterPanel();
+		setupTopPanel(); //top panel of buttons
+		setupCenterPanel(); //canvas for animation
 		
 		kf = new KeyFrame(DURATION, new EventHandler<ActionEvent>() {
 			
 			@Override
 			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
-				for (Map.Entry<Boid, MovingBoid> boids: boidList.entrySet()) {
+				for (Map.Entry<Boid, MovingBoid> boids: boidList.entrySet()) { //move every boid
 					Boid boid = boids.getKey();
 					MovingBoid movingBoid = boids.getValue();
 					
@@ -68,6 +66,7 @@ public class App extends Application {
 				}
 			}
 		});
+		
 		timeline.setCycleCount(timeline.INDEFINITE);
 		timeline.getKeyFrames().add(kf);
 		timeline.play();
@@ -183,13 +182,13 @@ public class App extends Application {
 			@Override
 			public void handle(MouseEvent event) {
 				switch(event.getButton()) {
-				case PRIMARY:
+				case PRIMARY: //left click to add a single boid
 					Boid boid = new Boid(event.getX(), event.getY());
 					MovingBoid movingBoid = new MovingBoid(centerPanel, boid.getX(), boid.getY());
 					
 					boidList.put(boid, movingBoid);
 					break;
-				case SECONDARY:
+				case SECONDARY: //right click to add a single obstacle
 					Obstacle obstacle = new Obstacle(event.getX(), event.getY());
 					
 					Circle circle = new Circle(obstacle.getX(), obstacle.getY(), Constants.OBSTACLE_SIZE);
@@ -206,8 +205,7 @@ public class App extends Application {
 
 			@Override
 			public void handle(MouseEvent event) {
-				// TODO Auto-generated method stub
-				if (event.getButton() == MouseButton.PRIMARY) {
+				if (event.getButton() == MouseButton.PRIMARY) { //left click and drag to continuously add boids
 					Boid boid = new Boid(event.getX(), event.getY());
 					MovingBoid movingBoid = new MovingBoid(centerPanel, boid.getX(), boid.getY());
 					
@@ -221,14 +219,15 @@ public class App extends Application {
 		setupBorderObstacles();
 	}
 	
-	private void setupBorderObstacles() {
-		verticalBorderObstacles();
-		horizontalBorderObstacles();
+	private void setupBorderObstacles() { //setup borders at start up/reset
+		verticalBorderObstacles(); //vertical border
+		horizontalBorderObstacles(); //horizontal border
 	}
 	
-	private void verticalBorderObstacles() {
-		if (vertBorderObstacle) {
+	private void verticalBorderObstacles() { //
+		if (vertBorderObstacle) { //add vertical obstacle border
 			int numOfVerticalObstacles = Constants.CANVAS_HEIGHT / (Constants.OBSTACLE_SIZE * 2);
+			
 			for (int i = 0; i < numOfVerticalObstacles; i++) {//left and right obstacles
 				double tempY = Constants.OBSTACLE_SIZE * (i + 1) + Constants.OBSTACLE_SIZE * i;
 				for (int j = 0; j <= Constants.CANVAS_WIDTH; j += Constants.CANVAS_WIDTH) {
@@ -241,7 +240,7 @@ public class App extends Application {
 					vertBorderObstacleList.add(obstacle);
 				}
 			}
-		} else if (!vertBorderObstacleList.isEmpty()) {
+		} else if (!vertBorderObstacleList.isEmpty()) { //remove vertical obstacle border
 			for (Obstacle borderObstacle: vertBorderObstacleList) {
 				centerPanel.getChildren().remove(obstacleList.remove(borderObstacle));
 			}
@@ -250,9 +249,8 @@ public class App extends Application {
 	}
 	
 	private void horizontalBorderObstacles() {
-		if (horBorderObstacle) {
+		if (horBorderObstacle) { //add horizontal obstacle border
 			int numOfHorizontalObstacles = Constants.CANVAS_WIDTH / (Constants.OBSTACLE_SIZE * 2);
-			
 			
 			for (int i = 0; i < numOfHorizontalObstacles; i++) { //top and bottom obstacles
 				double tempX = Constants.OBSTACLE_SIZE * (i + 1) + Constants.OBSTACLE_SIZE * i;
@@ -266,7 +264,7 @@ public class App extends Application {
 					horBorderObstacleList.add(obstacle);
 				}
 			}
-		} else if (!horBorderObstacleList.isEmpty()) {
+		} else if (!horBorderObstacleList.isEmpty()) { //remove horizontal obstacle border
 			for (Obstacle borderObstacle: horBorderObstacleList) {
 				centerPanel.getChildren().remove(obstacleList.remove(borderObstacle));
 			}

@@ -16,9 +16,10 @@ public class MovingBoid {
 	}
 	
 	public void move(Pane pane, double x, double y) {
+		//visually create a vanishing tail while moving
 		pane.getChildren().add(addCircle(x, y));
 		
-		if(circleList.size() > 10) {
+		if(circleList.size() > 10) { //tail is 9 circles at decreasing radius and alpha
 			pane.getChildren().remove(circleList.remove(0));
 		}
 		

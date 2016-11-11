@@ -1,17 +1,19 @@
 package backend;
 
 public class Constants {
-	
+	//Constant values for backend
 	public final static int CANVAS_WIDTH = 1000;
 	public final static int CANVAS_HEIGHT = 600;
 	public final static int TOP_PANEL_HEIGHT = 30;
 	
 	public final static Boolean WRAP_CANVAS = true;
+	
 	public static Boolean BOIDS_FOLLOW = true;
 	public static Boolean RANDOM_NOISE = true;
 	public static Boolean PERSONAL_SPACE = true;
 	
 	public final static double BOID_SPEED = 4;
+	public final static double BOID_NOISE_SPEED = 0.25;
 	public final static double BOID_OBSTACLE_AVOID_SPEED = 2.5;
 	public final static double BOID_NEIGHBOUR_AVOID_SPEED = 0.5;
 	
