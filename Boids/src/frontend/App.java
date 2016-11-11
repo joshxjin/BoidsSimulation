@@ -12,8 +12,10 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Separator;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -167,6 +169,7 @@ public class App extends Application {
 		
 		topPanel.setMinHeight(Constants.TOP_PANEL_HEIGHT);
 		topPanel.getChildren().add(resetBtn);
+		topPanel.getChildren().add(new Separator(Orientation.VERTICAL));
 		topPanel.getChildren().add(verticalBorderObstacleBtn);
 		topPanel.getChildren().add(horizontalBorderObstaclesBtn);
 		topPanel.getChildren().add(boidsFollowBtn);
