@@ -13,6 +13,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -94,23 +95,25 @@ public class App extends Application {
 			@Override
 			public void handle(MouseEvent event) {
 				// TODO Auto-generated method stub
-				Boid boid = new Boid(event.getX(), event.getY());
-				MovingBoid movingBoid = new MovingBoid(centerPanel, boid.getX(), boid.getY());
-				
-				boidList.put(boid, movingBoid);
+				if (event.getButton() == MouseButton.PRIMARY) {
+					Boid boid = new Boid(event.getX(), event.getY());
+					MovingBoid movingBoid = new MovingBoid(centerPanel, boid.getX(), boid.getY());
+					
+					boidList.put(boid, movingBoid);
+				}
 			}
 		});
 		
 		centerPanel.minWidth(Constants.CANVAS_WIDTH);
 		centerPanel.minHeight(Constants.CANVAS_HEIGHT);
-		//setupBorderObstacles();
+		setupBorderObstacles();
 	}
 	
 	private void setupBorderObstacles() {
 		int numOfHorizontalObstacles = Constants.CANVAS_WIDTH / (Constants.CIRCLE_SIZE * 2);
 		int numOfVerticalObstacles = Constants.CANVAS_HEIGHT / (Constants.CIRCLE_SIZE * 2);
 		
-		for (int i = 0; i < numOfHorizontalObstacles; i++) {
+		for (int i = 0; i < numOfHorizontalObstacles; i++) { //top and bottom obstacles
 			double tempX = Constants.CIRCLE_SIZE * (i + 1) + Constants.CIRCLE_SIZE * i;
 			for (int j = 0; j <= Constants.CANVAS_HEIGHT; j += Constants.CANVAS_HEIGHT) {
 				double tempY = Math.abs(Constants.CIRCLE_SIZE - j);
@@ -122,7 +125,8 @@ public class App extends Application {
 			}
 		}
 		
-		for (int i = 1; i < numOfVerticalObstacles - 1; i++) {
+		/*
+		for (int i = 1; i < numOfVerticalObstacles - 1; i++) {//left and right obstacles
 			double tempY = Constants.CIRCLE_SIZE * (i + 1) + Constants.CIRCLE_SIZE * i;
 			for (int j = 0; j <= Constants.CANVAS_WIDTH; j += Constants.CANVAS_WIDTH) {
 				double tempX = Math.abs(Constants.CIRCLE_SIZE - j);
@@ -133,6 +137,7 @@ public class App extends Application {
 				centerPanel.getChildren().add(circle);
 			}
 		}
+		*/
 	}
 	
 	public static void main(String[] args) {

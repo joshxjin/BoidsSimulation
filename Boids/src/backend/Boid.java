@@ -30,25 +30,20 @@ public class Boid {
 			double distX = x - obstacle.getX();
 			double distY = y - obstacle.getY();
 			
-			if (Math.hypot(distX, distY) <= Constants.AVOID_DISTANCE) {
-				if (Math.abs(distX) < Math.abs(distY)) {
-					dx = -dx;
-				} else if (Math.abs(distY) < Math.abs(distX)) {
-					dy = -dy;
+			if (Math.hypot(distX, distY) <= Constants.AVOID_OBSTACLE_DISTANCE) {
+				if (distX < 0) { //to the left of obstacle
+					dx -= Constants.BOID_OBSTACLE_AVOID_SPEED;
 				} else {
-					/*
-					switch(r.nextInt(2)) {
-					case 1:
-						dy = dy * 1.5;
-						dx = -dx / 1.5;
-						break;
-					default:
-						dy = dy / 1.5;
-						dx = -dx * 1.5;
-						break;
-					}
-					*/
+					dx += Constants.BOID_OBSTACLE_AVOID_SPEED;
 				}
+					
+				if (distY < 0) { //on top of obstacle
+					dy -= Constants.BOID_OBSTACLE_AVOID_SPEED;
+				} else {
+					dy += Constants.BOID_OBSTACLE_AVOID_SPEED;
+				}
+				
+				normaliseSpeed();
 			}
 		}
 		
@@ -74,11 +69,15 @@ public class Boid {
 				dx = dx / (neighbourBoids.size() + 1);
 				dy = dy / (neighbourBoids.size() + 1);
 				
-				double speed = Math.hypot(dx, dy);
-				dx = dx * Constants.BOID_SPEED / speed;
-				dy = dy * Constants.BOID_SPEED / speed;
+				normaliseSpeed();
 			}
 		} 
+	}
+	
+	private void normaliseSpeed() {
+		double speed = Math.hypot(dx, dy);
+		dx = dx * Constants.BOID_SPEED / speed;
+		dy = dy * Constants.BOID_SPEED / speed;
 	}
 	
 	private void makePersonalSpace(Set<Boid> boidList) {
@@ -87,7 +86,7 @@ public class Boid {
 			ArrayList<Boid> neighbourBoids = new ArrayList<Boid>();
 			for (Boid boid: boidList) {
 				double dist = Math.hypot(x - boid.getX(), y - boid.getY());
-				if (boid != this && dist < Constants.AVOID_DISTANCE) {
+				if (boid != this && dist < Constants.AVOID_NEIGHBOUR_DISTANCE) {
 					neighbourBoids.add(boid);
 				}
 			}
@@ -109,16 +108,18 @@ public class Boid {
 				distY = y - closestBoid.getY();
 				
 				if (distX < 0) { //to the left of neighbour
-					dx -= 0.5;
+					dx -= Constants.BOID_NEIGHBOUR_AVOID_SPEED;
 				} else {
-					dx += 0.5;
+					dx += Constants.BOID_NEIGHBOUR_AVOID_SPEED;
 				}
 					
 				if (distY < 0) { //on top of neighbour
-					dy -= 0.5;
+					dy -= Constants.BOID_NEIGHBOUR_AVOID_SPEED;
 				} else {
-					dy += 0.5;
+					dy += Constants.BOID_NEIGHBOUR_AVOID_SPEED;
 				}
+				
+				normaliseSpeed();
 			}
 		}
 	}
@@ -131,9 +132,7 @@ public class Boid {
 			dx += noiseX;
 			dy += noiseY;
 			
-			double speed = Math.hypot(dx, dy);
-			dx = dx * Constants.BOID_SPEED / speed;
-			dy = dy * Constants.BOID_SPEED / speed;
+			//normaliseSpeed();
 		}
 	}
 	

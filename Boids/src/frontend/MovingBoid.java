@@ -18,7 +18,7 @@ public class MovingBoid {
 	public void move(Pane pane, double x, double y) {
 		pane.getChildren().add(addCircle(x, y));
 		
-		if(circleList.size() > 20) {
+		if(circleList.size() > 10) {
 			pane.getChildren().remove(circleList.remove(0));
 		}
 		
@@ -27,8 +27,8 @@ public class MovingBoid {
 		for (int i = circleList.size() - 1; i >= 0; i--) {
 			circleList.get(i).setFill(Color.rgb(200, 50, 50, alpha));
 			circleList.get(i).setRadius(shrinkSize);
-			alpha -= 0.05;
-			shrinkSize -= 0.2;
+			alpha -= 0.1;
+			shrinkSize -= 0.4;
 		}
 	}
 	
