@@ -2,6 +2,7 @@ package backend;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Set;
 
 public class Boid {
 	
@@ -12,8 +13,8 @@ public class Boid {
 		this.x = x;
 		this.y = y;
 		
-		dx = r.nextDouble() * 2 + 1;
-		dy = r.nextDouble() * 2 + 1;
+		dx = r.nextDouble() * 3;
+		dy = Math.sqrt(Math.pow(Constants.BOID_SPEED, 2) - Math.pow(dx, 2));
 		
 		switch(r.nextInt(2)) {
 		case 1:
@@ -29,11 +30,41 @@ public class Boid {
 		
 	}
 	
-	public void move(ArrayList<Obstacle> obstacles) {
+	public void move(Set<Boid> boidList, ArrayList<Obstacle> obstacles) {
+		followNeighbour(true, boidList);
+		wrapCanvas(Constants.WRAP_CANVAS);
+	}
+	
+	private void followNeighbour(Boolean follow, Set<Boid> boidList) {
+		if (follow) {
+			ArrayList<Boid> neighbourBoids = new ArrayList<Boid>();
+			for (Boid boid: boidList) {
+				double dist = Math.hypot(x - boid.getX(), y - boid.getY());
+				if (boid != this && dist < Constants.NEIGHBOUR_RADIUS) {
+					neighbourBoids.add(boid);
+				}
+			}
+			
+			if (!neighbourBoids.isEmpty()) {
+				for (Boid neighbourBoid: neighbourBoids) {
+					dx += neighbourBoid.getDx();
+					dy += neighbourBoid.getDy();
+				}
+				dx = dx / (neighbourBoids.size() + 1);
+				dy = dy / (neighbourBoids.size() + 1);
+				
+				follow = false;
+			}
+			
+			
+			/*
+			 * get average direction
+			 * move towards average direction
+			 */
+		} 
+		
 		x += dx;
 		y += dy;
-		
-		wrapCanvas(true);
 	}
 	
 	private void wrapCanvas(Boolean wrap) {

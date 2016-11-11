@@ -50,7 +50,7 @@ public class App extends Application {
 					Boid boid = boids.getKey();
 					MovingBoid movingBoid = boids.getValue();
 					
-					boid.move(obstacleList);
+					boid.move(boidList.keySet(), obstacleList);
 					movingBoid.move(centerPanel, boid.getX(), boid.getY());
 				}
 			}
@@ -80,7 +80,7 @@ public class App extends Application {
 		});
 		centerPanel.minWidth(Constants.CANVAS_WIDTH);
 		centerPanel.minHeight(Constants.CANVAS_HEIGHT);
-		setupBorderObstacles();
+		//setupBorderObstacles();
 	}
 	
 	private void setupBorderObstacles() {
