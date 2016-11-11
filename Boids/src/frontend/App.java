@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import backend.Boid;
+import backend.Constants;
 import backend.Obstacle;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -23,9 +24,6 @@ import javafx.util.Duration;
 
 public class App extends Application {
 	
-	final static int  CANVAS_WIDTH = 800;
-	final static int  CANVAS_HEIGHT = 800;
-	final static int CIRCLE_SIZE = 10;
 	final private Duration DURATION = Duration.millis(33); //~30FPS
 	
 	private Pane centerPanel = new Pane();;
@@ -33,7 +31,7 @@ public class App extends Application {
 	private KeyFrame kf;
 	
 	private ArrayList<Obstacle> obstacleList = new ArrayList<Obstacle>();
-	private HashMap<Boid, Circle> boidList = new HashMap<Boid, Circle>();
+	private HashMap<Boid, MovingBoid> boidList = new HashMap<Boid, MovingBoid>();
 	
 	
 	@Override
@@ -48,14 +46,12 @@ public class App extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				// TODO Auto-generated method stub
-				for (Map.Entry<Boid, Circle> boids: boidList.entrySet()) {
+				for (Map.Entry<Boid, MovingBoid> boids: boidList.entrySet()) {
 					Boid boid = boids.getKey();
-					Circle circle = boids.getValue();
+					MovingBoid movingBoid = boids.getValue();
 					
 					boid.move(obstacleList);
-					
-					circle.setCenterX(boid.getX());
-					circle.setCenterY(boid.getY());
+					movingBoid.move(centerPanel, boid.getX(), boid.getY());
 				}
 			}
 		});
@@ -63,7 +59,7 @@ public class App extends Application {
 		timeline.getKeyFrames().add(kf);
 		timeline.play();
 		
-		Scene scene = new Scene(root, CANVAS_WIDTH, CANVAS_HEIGHT);
+		Scene scene = new Scene(root, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
 		
 		primaryStage.setTitle("Boids Simulation");
 		primaryStage.setScene(scene);
@@ -77,40 +73,39 @@ public class App extends Application {
 			public void handle(MouseEvent event) {
 				// TODO Auto-generated method stub
 				Boid boid = new Boid(event.getX(), event.getY());
-				Circle circle = new Circle(boid.getX(), boid.getY(), CIRCLE_SIZE);
-				circle.setFill(Color.ORANGE);
-				centerPanel.getChildren().add(circle);
-				boidList.put(boid, circle);
+				MovingBoid movingBoid = new MovingBoid(centerPanel, boid.getX(), boid.getY());
+				
+				boidList.put(boid, movingBoid);
 			}
 		});
-		centerPanel.minWidth(CANVAS_WIDTH);
-		centerPanel.minHeight(CANVAS_HEIGHT);
+		centerPanel.minWidth(Constants.CANVAS_WIDTH);
+		centerPanel.minHeight(Constants.CANVAS_HEIGHT);
 		setupBorderObstacles();
 	}
 	
 	private void setupBorderObstacles() {
-		int numOfHorizontalObstacles = CANVAS_WIDTH / (CIRCLE_SIZE * 2);
-		int numOfVerticalObstacles = CANVAS_HEIGHT / (CIRCLE_SIZE * 2);
+		int numOfHorizontalObstacles = Constants.CANVAS_WIDTH / (Constants.CIRCLE_SIZE * 2);
+		int numOfVerticalObstacles = Constants.CANVAS_HEIGHT / (Constants.CIRCLE_SIZE * 2);
 		
 		for (int i = 0; i < numOfHorizontalObstacles; i++) {
-			double tempX = CIRCLE_SIZE * (i + 1) + CIRCLE_SIZE * i;
-			for (int j = 0; j <= CANVAS_HEIGHT; j += CANVAS_HEIGHT) {
-				double tempY = Math.abs(CIRCLE_SIZE - j);
+			double tempX = Constants.CIRCLE_SIZE * (i + 1) + Constants.CIRCLE_SIZE * i;
+			for (int j = 0; j <= Constants.CANVAS_HEIGHT; j += Constants.CANVAS_HEIGHT) {
+				double tempY = Math.abs(Constants.CIRCLE_SIZE - j);
 				Obstacle obstacle = new Obstacle(tempX, tempY);
 				obstacleList.add(obstacle);
-				Circle circle = new Circle(tempX, tempY, CIRCLE_SIZE);
+				Circle circle = new Circle(tempX, tempY, Constants.CIRCLE_SIZE);
 				circle.setFill(Color.BLACK);
 				centerPanel.getChildren().add(circle);
 			}
 		}
 		
 		for (int i = 1; i < numOfVerticalObstacles - 1; i++) {
-			double tempY = CIRCLE_SIZE * (i + 1) + CIRCLE_SIZE * i;
-			for (int j = 0; j <= CANVAS_WIDTH; j += CANVAS_WIDTH) {
-				double tempX = Math.abs(CIRCLE_SIZE - j);
+			double tempY = Constants.CIRCLE_SIZE * (i + 1) + Constants.CIRCLE_SIZE * i;
+			for (int j = 0; j <= Constants.CANVAS_WIDTH; j += Constants.CANVAS_WIDTH) {
+				double tempX = Math.abs(Constants.CIRCLE_SIZE - j);
 				Obstacle obstacle = new Obstacle(tempX, tempY);
 				obstacleList.add(obstacle);
-				Circle circle = new Circle(tempX, tempY, CIRCLE_SIZE);
+				Circle circle = new Circle(tempX, tempY, Constants.CIRCLE_SIZE);
 				circle.setFill(Color.BLACK);
 				centerPanel.getChildren().add(circle);
 			}

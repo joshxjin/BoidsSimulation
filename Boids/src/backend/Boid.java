@@ -12,32 +12,43 @@ public class Boid {
 		this.x = x;
 		this.y = y;
 		
+		dx = r.nextDouble() * 2 + 1;
+		dy = r.nextDouble() * 2 + 1;
+		
 		switch(r.nextInt(2)) {
-		case 1: 
-			dx = 1;
-			break;
-		default:
-			dx = -1;
+		case 1:
+			dx = -dx;
 			break;
 		}
 		
 		switch(r.nextInt(2)) {
-		case 1: 
-			dy = 1;
-			break;
-		default:
-			dy = -1;
+		case 1:
+			dy = -dy;
 			break;
 		}
+		
 	}
 	
 	public void move(ArrayList<Obstacle> obstacles) {
 		x += dx;
 		y += dy;
 		
-		for (Obstacle obstacle: obstacles) {
-			double xDist = x - obstacle.getX();
-			double yDist = y - obstacle.getY();
+		wrapCanvas(true);
+	}
+	
+	private void wrapCanvas(Boolean wrap) {
+		if (wrap) {
+			if (x < 0) {
+				x = Constants.CANVAS_WIDTH;
+			} else if (x > Constants.CANVAS_WIDTH) {
+				x = 0;
+			}
+			
+			if (y < 0) {
+				y = Constants.CANVAS_HEIGHT;
+			} else if (y > Constants.CANVAS_HEIGHT) {
+				y = 0;
+			}
 		}
 	}
 
