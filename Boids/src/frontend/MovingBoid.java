@@ -23,7 +23,7 @@ public class MovingBoid {
 		}
 		
 		double alpha = 1;
-		double shrinkSize = Constants.CIRCLE_SIZE;
+		double shrinkSize = Constants.BOID_SIZE;
 		for (int i = circleList.size() - 1; i >= 0; i--) {
 			circleList.get(i).setFill(Color.rgb(200, 50, 50, alpha));
 			circleList.get(i).setRadius(shrinkSize);
@@ -33,7 +33,7 @@ public class MovingBoid {
 	}
 	
 	private Circle addCircle(double x, double y) {
-		Circle circle = new Circle(x, y, Constants.CIRCLE_SIZE);
+		Circle circle = new Circle(x, y, Constants.BOID_SIZE);
 		circle.setFill(Color.rgb(200, 50, 50, 1));
 		circleList.add(circle);
 		

@@ -13,6 +13,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -72,7 +73,20 @@ public class App extends Application {
 	}
 	
 	private void setupTopPanel() {
+		Button resetBtn = new Button();
+		resetBtn.setText("Reset");
+		resetBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				boidList.clear();
+				obstacleList.clear();
+				centerPanel.getChildren().clear();
+				setupCenterPanel();
+			}
+		});
 		
+		topPanel.getChildren().add(resetBtn);
 	}
 	
 	private void setupCenterPanel() {
@@ -91,7 +105,7 @@ public class App extends Application {
 					Obstacle obstacle = new Obstacle(event.getX(), event.getY());
 					obstacleList.add(obstacle);
 					
-					Circle circle = new Circle(obstacle.getX(), obstacle.getY(), Constants.CIRCLE_SIZE);
+					Circle circle = new Circle(obstacle.getX(), obstacle.getY(), Constants.OBSTACLE_SIZE);
 					circle.setFill(Color.BLACK);
 					centerPanel.getChildren().add(circle);
 					break;
@@ -119,16 +133,16 @@ public class App extends Application {
 	}
 	
 	private void setupBorderObstacles() {
-		int numOfHorizontalObstacles = Constants.CANVAS_WIDTH / (Constants.CIRCLE_SIZE * 2);
-		int numOfVerticalObstacles = Constants.CANVAS_HEIGHT / (Constants.CIRCLE_SIZE * 2);
+		int numOfHorizontalObstacles = Constants.CANVAS_WIDTH / (Constants.OBSTACLE_SIZE * 2);
+		int numOfVerticalObstacles = Constants.CANVAS_HEIGHT / (Constants.OBSTACLE_SIZE * 2);
 		
 		for (int i = 0; i < numOfHorizontalObstacles; i++) { //top and bottom obstacles
-			double tempX = Constants.CIRCLE_SIZE * (i + 1) + Constants.CIRCLE_SIZE * i;
+			double tempX = Constants.OBSTACLE_SIZE * (i + 1) + Constants.OBSTACLE_SIZE * i;
 			for (int j = 0; j <= Constants.CANVAS_HEIGHT; j += Constants.CANVAS_HEIGHT) {
-				double tempY = Math.abs(Constants.CIRCLE_SIZE - j);
+				double tempY = Math.abs(Constants.OBSTACLE_SIZE - j);
 				Obstacle obstacle = new Obstacle(tempX, tempY);
 				obstacleList.add(obstacle);
-				Circle circle = new Circle(tempX, tempY, Constants.CIRCLE_SIZE);
+				Circle circle = new Circle(tempX, tempY, Constants.OBSTACLE_SIZE);
 				circle.setFill(Color.BLACK);
 				centerPanel.getChildren().add(circle);
 			}
@@ -136,12 +150,12 @@ public class App extends Application {
 		
 		/*
 		for (int i = 1; i < numOfVerticalObstacles - 1; i++) {//left and right obstacles
-			double tempY = Constants.CIRCLE_SIZE * (i + 1) + Constants.CIRCLE_SIZE * i;
+			double tempY = Constants.OBSTACLE_SIZE * (i + 1) + Constants.OBSTACLE_SIZE * i;
 			for (int j = 0; j <= Constants.CANVAS_WIDTH; j += Constants.CANVAS_WIDTH) {
-				double tempX = Math.abs(Constants.CIRCLE_SIZE - j);
+				double tempX = Math.abs(Constants.OBSTACLE_SIZE - j);
 				Obstacle obstacle = new Obstacle(tempX, tempY);
 				obstacleList.add(obstacle);
-				Circle circle = new Circle(tempX, tempY, Constants.CIRCLE_SIZE);
+				Circle circle = new Circle(tempX, tempY, Constants.OBSTACLE_SIZE);
 				circle.setFill(Color.BLACK);
 				centerPanel.getChildren().add(circle);
 			}

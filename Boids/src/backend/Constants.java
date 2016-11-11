@@ -15,9 +15,10 @@ public class Constants {
 	public final static double BOID_OBSTACLE_AVOID_SPEED = 2.5;
 	public final static double BOID_NEIGHBOUR_AVOID_SPEED = 0.5;
 	
-	public final static int CIRCLE_SIZE = 5;
+	public final static int BOID_SIZE = 5;
+	public final static int OBSTACLE_SIZE = 10;
 	
-	public final static double NEIGHBOUR_RADIUS = CIRCLE_SIZE * 8;
-	public final static double AVOID_NEIGHBOUR_DISTANCE = CIRCLE_SIZE * 4;
-	public final static double AVOID_OBSTACLE_DISTANCE = CIRCLE_SIZE * 5;
+	public final static double NEIGHBOUR_RADIUS = BOID_SIZE * 8;
+	public final static double AVOID_NEIGHBOUR_DISTANCE = BOID_SIZE * 4;
+	public final static double AVOID_OBSTACLE_DISTANCE = (BOID_SIZE + OBSTACLE_SIZE) * 2;
 }
