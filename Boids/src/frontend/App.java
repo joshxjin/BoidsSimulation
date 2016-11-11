@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -71,11 +72,23 @@ public class App extends Application {
 
 			@Override
 			public void handle(MouseEvent event) {
-				// TODO Auto-generated method stub
-				Boid boid = new Boid(event.getX(), event.getY());
-				MovingBoid movingBoid = new MovingBoid(centerPanel, boid.getX(), boid.getY());
-				
-				boidList.put(boid, movingBoid);
+
+				switch(event.getButton()) {
+				case PRIMARY:
+					Boid boid = new Boid(event.getX(), event.getY());
+					MovingBoid movingBoid = new MovingBoid(centerPanel, boid.getX(), boid.getY());
+					
+					boidList.put(boid, movingBoid);
+					break;
+				case SECONDARY:
+					Obstacle obstacle = new Obstacle(event.getX(), event.getY());
+					obstacleList.add(obstacle);
+					
+					Circle circle = new Circle(obstacle.getX(), obstacle.getY(), Constants.CIRCLE_SIZE);
+					circle.setFill(Color.BLACK);
+					centerPanel.getChildren().add(circle);
+					break;
+				}
 			}
 		});
 		centerPanel.minWidth(Constants.CANVAS_WIDTH);
