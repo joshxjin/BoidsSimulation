@@ -31,12 +31,39 @@ public class Boid {
 	}
 	
 	public void move(Set<Boid> boidList, ArrayList<Obstacle> obstacles) {
-		followNeighbour(Constants.BOIDS_FOLLOW, boidList);
+		followNeighbour(boidList);
 		wrapCanvas(Constants.WRAP_CANVAS);
+		
+		if (Constants.RANDOM_NOISE){
+			double noiseX = r.nextDouble() * 0.25;
+			double noiseY = r.nextDouble() * 0.25;
+			
+			switch(r.nextInt(2)) {
+			case 1:
+				noiseX = -noiseX;
+				break;
+			}
+			
+			switch(r.nextInt(2)) {
+			case 1:
+				noiseY = -noiseY;
+				break;
+			}
+			
+			dx += noiseX;
+			dy += noiseY;
+			
+			double speed = Math.hypot(dx, dy);
+			dx = dx * Constants.BOID_SPEED / speed;
+			dy = dy * Constants.BOID_SPEED / speed;
+		}
+		
+		x += dx;
+		y += dy;
 	}
 	
-	private void followNeighbour(Boolean follow, Set<Boid> boidList) {
-		if (follow) {
+	private void followNeighbour(Set<Boid> boidList) {
+		if (Constants.BOIDS_FOLLOW) {
 			ArrayList<Boid> neighbourBoids = new ArrayList<Boid>();
 			for (Boid boid: boidList) {
 				double dist = Math.hypot(x - boid.getX(), y - boid.getY());
@@ -56,8 +83,6 @@ public class Boid {
 				double speed = Math.hypot(dx, dy);
 				dx = dx * Constants.BOID_SPEED / speed;
 				dy = dy * Constants.BOID_SPEED / speed;
-				
-				follow = false;
 			}
 			
 			
@@ -66,9 +91,6 @@ public class Boid {
 			 * move towards average direction
 			 */
 		} 
-		
-		x += dx;
-		y += dy;
 	}
 	
 	private void wrapCanvas(Boolean wrap) {
